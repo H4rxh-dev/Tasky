@@ -1,14 +1,14 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
+import Mainapp from './Mainapp'
 
 const App = () => {
   return (
-    <View>
-      <Text>App</Text>
-    </View>
-  )
+<>
+<Mainapp/>
+</>  )
 }
 
 export default App
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({})  

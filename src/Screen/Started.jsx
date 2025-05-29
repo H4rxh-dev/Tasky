@@ -1,11 +1,32 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { colors } from '../styles/color'
-const Started = () => {
+import AsyncStorage from '@react-native-async-storage/async-storage'
+const Started = ({navigation}) => {
+
+  const started=async()=>{
+
+try {
+  
+let data=await AsyncStorage.setItem("User","true")
+      navigation.replace('Home'); // Replace to prevent going back to StartedScreen
+
+console.log("user hai bhai")
+} catch (error) {
+  
+}
+
+
+
+  }
+  
+  
+  
+  
   return (
     <View style={styles.contain}>
   <Image
-  source={require('../assets/Reck.jpeg')}
+  source={require('../assets/Reat_img.png')}
   style={{
     height:350,
     width: 330,
@@ -18,7 +39,7 @@ resizeMethod='contain'
 <View style={{justifyContent:"space-between",padding:14}}>
 <View style={{marginBottom:36}}>
 
-<Text style={{textAlign:"center",fontSize:22,fontWeight:700,fontFamily:"Inter-Regular",color:"#24252c",fonste}}>Task Management & {"\n"}
+<Text style={{textAlign:"center",fontSize:22,fontWeight:700,fontFamily:"Inter-Regular",color:"#24252c"}}>Task Management & {"\n"}
     To-Do List
 </Text>
 
@@ -46,7 +67,7 @@ project-wise conveniently!
 
 </View>
 
-    <TouchableOpacity style={styles.btn}>
+    <TouchableOpacity  onPress={started} style={styles.btn}>
         <Text style={styles.txt}>Let's Start</Text> 
     </TouchableOpacity>
 </View>

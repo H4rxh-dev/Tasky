@@ -12,7 +12,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../styles/color';
 import { MD3Colors, ProgressBar } from 'react-native-paper';
 import Progress from '../Components/Progress';
-import * as Progres from 'react-native-progress';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 
 

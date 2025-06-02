@@ -9,7 +9,7 @@ import { ScrollView } from 'react-native'; // add t
 
 
 
-const delet=<Ionicons name="trash" size={13} color={"#f478b8"} />
+const delet=<Ionicons name="trash" size={13} color={"#f478b8"} />   
 
 const time =<Ionicons name="time" size={13} color={"#ab94ff"} />
 const tick =<Ionicons name="arrow-back-outline" size={25} color={colors.textcolor} />
@@ -20,6 +20,20 @@ const notification =<Ionicons name="notifications" size={20} color={colors.textc
 const Track = ({navigation}) => {
 const [selected,setselected]=useState("All")
 const tabs = ['All', 'Todo', 'In Progress', 'Completed'];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 const data = {
   All: [

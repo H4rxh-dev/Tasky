@@ -3,7 +3,7 @@ import React from 'react'
 
 const Stored = () => {
   return (
-<SafeAreaView style={{flex:1
+<SafeAreaView style={{flex:1  
 }}>
 
 

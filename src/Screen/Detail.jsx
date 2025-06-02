@@ -25,7 +25,7 @@ const Detail = ({ navigation }) => {
   const [openStart, setOpenStart] = useState(false);
   const [openEnd, setOpenEnd] = useState(false);
   const [Item, setItem] = useState([]);
-  const [status, setStatus] = useState('All'); // or 'InProgress', 'Completed'
+  const [status, setStatus] = useState('In-progress'); // or 'InProgress', 'Completed'
 
 const [filtertaskitem, setFilterTaskItem] = useState([]);
 
@@ -106,7 +106,7 @@ setdesc("")
   }
 };
 
-
+  
 
 
 
@@ -246,7 +246,7 @@ const formatDate = (date) => {
             setOpenEnd(false);
             setEndDate(date);
           }}
-          onCancel={() => setOpenEnd(false)}          onCancel={() => setOpenEnd(false)}
+          onCancel={() => setOpenEnd(false)}          
         />
 
         <TouchableOpacity onPress={savingtask} style={styles.btn}>

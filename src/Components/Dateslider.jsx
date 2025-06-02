@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
   dateLabel: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#282930',
+    color: '#282930 ',
   },
   monthLabel: {
     fontSize: 12,

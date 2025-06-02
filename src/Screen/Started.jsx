@@ -88,9 +88,11 @@ justifyContent:"space-evenly"
     width: 220,
     height: 220,
     // resizeMode: 'contain',
-  },btn:{
+  },
+  btn:{
 backgroundColor:colors.btncolor,padding:20,borderCurve:50,borderRadius:15
-  },txt:{
+  },
+  txt:{
     textAlign:"center",color:"#ffffff",fontSize:14,fontWeight:700
   },
       txts:{fontSize:12,fontFamily:"Inter_Regular",textAlign:"center",color:"#96939e",fontWeight:600}

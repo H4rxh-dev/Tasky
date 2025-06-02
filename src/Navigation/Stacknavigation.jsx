@@ -46,7 +46,6 @@ fetch()
 console.log("intialwa",initialRoute)
 
 
-// 👇 PLACE THE LOADING VIEW HERE
   if (!initialRoute) {
     return (
 

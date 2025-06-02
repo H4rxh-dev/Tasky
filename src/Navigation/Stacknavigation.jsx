@@ -1,14 +1,16 @@
 import { ActivityIndicator, Image, StyleSheet, Text, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Home from '../Screen/Home';
 import Started from '../Screen/Started';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LottieView from 'lottie-react-native';
+import Tabnavigation from './Tabnavigation';
+import Profile from '../Screen/Profile';
+import Stored from '../Screen/Stored';
+import Detail from '../Screen/Detail';
 
 const Stack = createNativeStackNavigator();
 const Stacknavigation = () => {
-    // const[userdata,setuserdata]=useState(null)
     const [initialRoute, setInitialRoute] = useState(null);
 
 useEffect(()=>{
@@ -19,7 +21,7 @@ try {
   
 let hasstarted=await AsyncStorage.getItem("User")
 
-      setInitialRoute(hasstarted === 'true' ? 'Home' : 'Started');
+      setInitialRoute(hasstarted === 'true' ? 'Bottom' : 'Started');
 
 console.log("initialroute",initialRoute)
 
@@ -60,34 +62,20 @@ console.log("intialwa",initialRoute)
 );
   }
 
-
-{/* <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#f9f9f9' }}>
-  <Image
-    source={require('../assets/Reat_img.png')}
-    style={{ width: 120, height: 120, marginBottom: 30 }}
-  />
-  <Text style={{ fontSize: 20, fontWeight: '600', color: '#333', marginBottom: 15 }}>
-    Welcome back!
-  </Text>
-  <ActivityIndicator size="large" color="#4CAF50" />
-</View> */}
-
-
-
-
-
-
-
-
-
-
 return (
     <>
      <Stack.Navigator initialRouteName={initialRoute} screenOptions={{headerShown:false}}>
    
       <Stack.Screen name="Started" component={Started} />
 
-      <Stack.Screen name="Home" component={Home} />
+      <Stack.Screen name="Bottom" component={Tabnavigation} />
+
+      <Stack.Screen name="Profile" component={Profile} />
+      <Stack.Screen name="Stored" component={Stored} />
+      <Stack.Screen name="Detail" component={Detail} />
+
+
+
       </Stack.Navigator>
     </>
 )}

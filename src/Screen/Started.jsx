@@ -9,7 +9,7 @@ const Started = ({navigation}) => {
 try {
   
 let data=await AsyncStorage.setItem("User","true")
-      navigation.replace('Home'); // Replace to prevent going back to StartedScreen
+      navigation.replace('Bottom'); // Replace to prevent going back to StartedScreen
 
 console.log("user hai bhai")
 } catch (error) {

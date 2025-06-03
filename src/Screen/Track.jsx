@@ -106,6 +106,8 @@ const goingback=()=>{
 
 </View>
 
+
+
     <View style={styles.card}>
 <View style={{width:"80%",gap:10,paddingHorizontal:6}}>
         <Text style={styles.title}>

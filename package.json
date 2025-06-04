@@ -11,7 +11,10 @@
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^2.1.2",
+    "@react-native-firebase/analytics": "^22.2.0",
     "@react-native-firebase/app": "^22.2.0",
+    "@react-native-firebase/in-app-messaging": "^22.2.0",
+    "@react-native-firebase/messaging": "^22.2.0",
     "@react-navigation/bottom-tabs": "^7.3.13",
     "@react-navigation/native": "^7.1.9",
     "@react-navigation/native-stack": "^7.3.13",
@@ -27,6 +30,7 @@
     "react-native-safe-area-context": "^5.4.1",
     "react-native-screens": "^4.11.0",
     "react-native-svg": "^15.12.0",
+    "react-native-toast-message": "^2.3.0",
     "react-native-uuid": "^2.0.3",
     "react-native-vector-icons": "^10.2.0"
   },

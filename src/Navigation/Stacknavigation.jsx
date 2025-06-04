@@ -1,4 +1,4 @@
-import { ActivityIndicator, Image, StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, Image, Platform, StyleSheet, Text, View, Linking, PermissionsAndroid } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Started from '../Screen/Started';
@@ -8,80 +8,89 @@ import Tabnavigation from './Tabnavigation';
 import Profile from '../Screen/Profile';
 import Stored from '../Screen/Stored';
 import Detail from '../Screen/Detail';
+import messaging from "@react-native-firebase/messaging"
+import { configureNotifications } from '../services/Notification';
 
 const Stack = createNativeStackNavigator();
 const Stacknavigation = () => {
-    const [initialRoute, setInitialRoute] = useState(null);
+  const [initialRoute, setInitialRoute] = useState(null);
 
-useEffect(()=>{
+  useEffect(() => {
+    configureNotifications(); 
+  }, []);
 
+  useEffect(() => {
 
-const fetch=async()=>{
-try {
-  
-let hasstarted=await AsyncStorage.getItem("User")
+    getdevicetoken()
 
-      setInitialRoute(hasstarted === 'true' ? 'Bottom' : 'Started');
+  }, [])
 
-console.log("initialroute",initialRoute)
+  const getdevicetoken = async () => {
 
-
-
-
-
-} catch (error) {
-console.log("error in navigating",error)
-  
-}
+    let token = await messaging().getToken()
+    console.log("token====>", token)
+  }
 
 
+  useEffect(() => {
+    const fetch = async () => {
+      try {
 
-}
+        let hasstarted = await AsyncStorage.getItem("User")
+
+        setInitialRoute(hasstarted === 'true' ? 'Bottom' : 'Started');
+
+        console.log("initialroute", initialRoute)
 
 
-fetch()
+      } catch (error) {
+        console.log("error in navigating", error)
 
-},[])    
+      }
+    }
+    fetch()
 
-console.log("intialwa",initialRoute)
+  }, [])
+
+
+  console.log("intialwa", initialRoute)
 
 
   if (!initialRoute) {
     return (
 
- <View style={styles.container}>
-      <LottieView
-        source={require('../assets/spinner.json')}
-        autoPlay
-        loop
-        style={styles.animation}
-      />
-      <Text style={styles.text}>Loading your experience...</Text>
-    </View>
-);
+      <View style={styles.container}>
+        <LottieView
+          source={require('../assets/spinner.json')}
+          autoPlay
+          loop
+          style={styles.animation}
+        />
+        <Text style={styles.text}>Loading your experience...</Text>
+      </View>
+    );
   }
 
-return (
+  return (
     <>
-     <Stack.Navigator initialRouteName={initialRoute} screenOptions={{headerShown:false}}>
-   
-      <Stack.Screen name="Started" component={Started} />
+      <Stack.Navigator initialRouteName={initialRoute} screenOptions={{ headerShown: false }}>
 
-      <Stack.Screen name="Bottom" component={Tabnavigation} />
+        <Stack.Screen name="Started" component={Started} />
 
-      <Stack.Screen name="Profile" component={Profile} />
-      <Stack.Screen name="Stored" component={Stored} />
-      <Stack.Screen name="Detail" component={Detail} />
+        <Stack.Screen name="Bottom" component={Tabnavigation} />
 
-
+        <Stack.Screen name="Profile" component={Profile} />
+        <Stack.Screen name="Stored" component={Stored} />
+        <Stack.Screen name="Detail" component={Detail} />
 
       </Stack.Navigator>
     </>
-)}
+  )
+}
 
 export default Stacknavigation
 
-  const styles = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',

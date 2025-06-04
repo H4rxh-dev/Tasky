@@ -10,17 +10,15 @@ import React, { useEffect, useState } from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../styles/color';
-import { MD3Colors, ProgressBar } from 'react-native-paper';
 import Progress from '../Components/Progress';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
+import { showNotification } from '../services/Notification';
 
 
 
 
 const Home = () => {
   const [progress, setProgress] = useState(85);
-
-
 
   return (
     <SafeAreaView style={styles.container}>
@@ -49,25 +47,30 @@ const Home = () => {
 
         <View style={styles.taskContent}>
           <Text style={styles.taskText}>Your today's task is almost done</Text>
-          <TouchableOpacity style={styles.btn}>
+          <TouchableOpacity
+            onPress={() => {
+              showNotification()
+              console.log("lcicked")
+            }}
+            style={styles.btn}>
             <Text style={styles.btnText}>View Task</Text>
           </TouchableOpacity>
         </View>
-<View style={{ marginRight: 30, marginTop: 10, }}>
-  <AnimatedCircularProgress
-    size={50}
-    width={3}
-    fill={progress}
-    tintColor={colors.Whitebtn}
-    backgroundColor={"#8764ff"}
-  >
-    {(fill) => (
-        <Text style={{ color: colors.Whitebtn,fontSize:10}}>
-          {Math.round(fill)}%
-        </Text>
-    )}
-  </AnimatedCircularProgress>
-</View>
+        <View style={{ marginRight: 30, marginTop: 10, }}>
+          <AnimatedCircularProgress
+            size={50}
+            width={3}
+            fill={progress}
+            tintColor={colors.Whitebtn}
+            backgroundColor={"#8764ff"}
+          >
+            {(fill) => (
+              <Text style={{ color: colors.Whitebtn, fontSize: 10 }}>
+                {Math.round(fill)}%
+              </Text>
+            )}
+          </AnimatedCircularProgress>
+        </View>
       </View>
 
       <View style={styles.Progresscontainer
@@ -95,21 +98,21 @@ const Home = () => {
             <Text style={styles.overviewSub}>25 projects</Text>
           </View>
         </View>
-<View style={{ marginRight: 30, marginTop: 10, }}>
-  <AnimatedCircularProgress
-    size={50}
-    width={3}
-    fill={progress}
-    tintColor={"#9b6ef4"}
-    backgroundColor={"#ede4ff"}
-  >
-    {(fill) => (
-        <Text style={{ color: "#5d5e62",fontSize:10}}>
-          {Math.round(fill)}%
-        </Text>
-    )}
-  </AnimatedCircularProgress>
-</View>
+        <View style={{ marginRight: 30, marginTop: 10, }}>
+          <AnimatedCircularProgress
+            size={50}
+            width={3}
+            fill={progress}
+            tintColor={"#9b6ef4"}
+            backgroundColor={"#ede4ff"}
+          >
+            {(fill) => (
+              <Text style={{ color: "#5d5e62", fontSize: 10 }}>
+                {Math.round(fill)}%
+              </Text>
+            )}
+          </AnimatedCircularProgress>
+        </View>
       </View>
 
 

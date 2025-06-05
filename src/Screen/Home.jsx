@@ -14,9 +14,6 @@ import Progress from '../Components/Progress';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import { showNotification } from '../services/Notification';
 
-
-
-
 const Home = () => {
   const [progress, setProgress] = useState(85);
 

@@ -18,7 +18,7 @@ export const configureNotifications = () => {
         {
             channelId: "task-channel",
             channelName: "Task Notifications",
-            importance: 4, 
+            importance: 4,
         },
         (created) => console.log(`Channel created: ${created}`)
     );
@@ -32,5 +32,23 @@ export const showNotification = () => {
         playSound: true,
         soundName: 'default',
         importance: "high",
+    });
+};
+export const scheduleHourlyNotification = () => {
+    const fireDate = new Date(Date.now() + 10 * 1000);
+
+    console.log('Notification scheduled at:', fireDate);
+
+    PushNotification.localNotificationSchedule({
+        channelId: 'task-channel',
+        title: 'Task Reminder',
+        message: '🕐 Time to create a new task!',
+        date: fireDate,
+        allowWhileIdle: true,
+        repeatType: 'minute',
+        playSound: true,
+        soundName: 'default',
+        importance: 'high',
+        visibility: 'public',
     });
 };

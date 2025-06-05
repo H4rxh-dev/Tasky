@@ -9,15 +9,13 @@ import Profile from '../Screen/Profile';
 import Stored from '../Screen/Stored';
 import Detail from '../Screen/Detail';
 import messaging from "@react-native-firebase/messaging"
-import { configureNotifications } from '../services/Notification';
+import { configureNotifications, scheduleHourlyNotification } from '../services/Notification';
+import { requestExactAlarmPermission, requestNotificationPermission } from '../services/AlarmPermissionService';
 
 const Stack = createNativeStackNavigator();
 const Stacknavigation = () => {
   const [initialRoute, setInitialRoute] = useState(null);
 
-  useEffect(() => {
-    configureNotifications(); 
-  }, []);
 
   useEffect(() => {
 
@@ -31,30 +29,40 @@ const Stacknavigation = () => {
     console.log("token====>", token)
   }
 
-
   useEffect(() => {
-    const fetch = async () => {
+    const initializeApp = async () => {
       try {
+        const hasStarted = await AsyncStorage.getItem('User');
+        console.log('Notification scheduled hasStarted:', hasStarted);
+        if (hasStarted === 'true') {
+          setInitialRoute('Bottom');
 
-        let hasstarted = await AsyncStorage.getItem("User")
+ await requestNotificationPermission();
 
-        setInitialRoute(hasstarted === 'true' ? 'Bottom' : 'Started');
+ configureNotifications();
 
-        console.log("initialroute", initialRoute)
+        const alarmAsked = await AsyncStorage.getItem('AlarmPermissionAsked');
+console.log("Alarmaskeftdy",alarmAsked)
+        if (!alarmAsked && Platform.Version >= 31) {
+          await requestExactAlarmPermission();
+          await AsyncStorage.setItem('AlarmPermissionAsked', 'true'); // so it won't repeat
+        }
 
+        scheduleHourlyNotification()     
+
+        } else {
+          setInitialRoute('Started');
+        }
 
       } catch (error) {
-        console.log("error in navigating", error)
-
+        console.error('Error during app init:', error);
       }
-    }
-    fetch()
-
-  }, [])
+    };
+    initializeApp();
+  }, []);
 
 
   console.log("intialwa", initialRoute)
-
 
   if (!initialRoute) {
     return (

@@ -74,7 +74,7 @@ const CustomTabBar = ({ state, descriptors, navigation }) => {
 >
   <Ionicons
     name={iconName}
-    size={24}
+    size={25}
     color={isFocused ? colors.btncolor : colors.icon_outline}
   />
 </TouchableOpacity>
@@ -107,10 +107,10 @@ export default Tabnavigation;
 const styles = StyleSheet.create({
   tabBarWrapper: {
     position: 'absolute',
-    bottom: 20,
+    bottom:0,
     width: width - 40,
     left: 20,
-    height: 70,
+    height: 80,
     borderRadius: 20,
     backgroundColor: 'transparent',
     alignItems: 'center',
@@ -122,18 +122,19 @@ const styles = StyleSheet.create({
   },
   tabButtons: {
     flexDirection: 'row',
-    width: width - 40,
+    width: width - 30,
     // paddingHorizontal: 20,
-    paddingBottom: 10,
+    paddingBottom: 15,
+    marginBottom:30
   },
   tabItem: {
     flex: 1,
-  alignItems:"center"
+  alignItems:"center",
   },
   fab: {
     position: 'absolute',
-    bottom: 35,
-    left: width / 2 - 30 - 20,
+    bottom: 50,
+    left: width / 2 - 24 - 20,
     width: 60,
     height: 60,
     borderRadius: 30,

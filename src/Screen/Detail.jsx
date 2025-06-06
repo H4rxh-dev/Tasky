@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity,TextInput } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity,TextInput, Alert } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -74,6 +74,9 @@ const savingtask = async () => {
     const storedTasks = await AsyncStorage.getItem('tasks');
     const parsedTasks = storedTasks != null ? JSON.parse(storedTasks) : [];
 
+
+
+
     const newTask = {
       id,
       title,
@@ -85,6 +88,8 @@ const savingtask = async () => {
       progress: 0,
       isCompleted: false
     };
+
+if(!title || !desc || !value) return Alert.alert("pleasee add title and desc first")
 
     const updatedTasks = [...parsedTasks, newTask];
     await AsyncStorage.setItem('tasks', JSON.stringify(updatedTasks));

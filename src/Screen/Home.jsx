@@ -13,9 +13,26 @@ import { colors } from '../styles/color';
 import Progress from '../Components/Progress';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import { showNotification } from '../services/Notification';
+import { Modal } from 'react-native-paper';
 
 const Home = () => {
   const [progress, setProgress] = useState(85);
+ const [modalVisible, setModalVisible] = useState(false);
+  const [selectedTask, setSelectedTask] = useState(null);
+
+  const openModal = () => {
+   
+    setModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
+  };
+
+
+
+
+  
 
   return (
     <SafeAreaView style={styles.container}>
@@ -77,7 +94,7 @@ const Home = () => {
           6
         </Text>
       </View>
-      <Progress />
+      <Progress  openModal={openModal}    />
 
       <View style={styles.Progresscontainer
       }>
@@ -111,7 +128,32 @@ const Home = () => {
           </AnimatedCircularProgress>
         </View>
       </View>
+  <Modal
+          transparent={true}
+          animationType="fade"
+          visible={modalVisible}
+          onRequestClose={closeModal}
+        >
+          <TouchableOpacity onPress={()=>closeModal()} style={styles.modalOverlay}>
+<View style={{backgroundColor:"white",height:250,width:"90%",padding:20,justifyContent:"center",gap:30}}>
+  <Text style={{textAlign:"center",fontSize:16}}>Are you sure you want to do delete the task</Text>
+  
+  <View style={{flexDirection:"row",justifyContent:"space-evenly"}}>
+    <TouchableOpacity  onPress={()=>closeModal()} style={{backgroundColor:"green",paddingHorizontal:30,paddingVertical:10,borderRadius:7}}>
+      <Text style={{color:colors.Whitebtn}}>yes
+      </Text>
+    </TouchableOpacity>
+    <TouchableOpacity onPress={closeModal()} style={{backgroundColor:"red",paddingHorizontal:30,paddingVertical:10,borderRadius:7}}>
+      <Text style={{color:colors.Whitebtn}}>No
+      </Text>
+    </TouchableOpacity>
 
+
+  </View>
+  </View>
+
+          </TouchableOpacity>
+        </Modal>
 
 
     </SafeAreaView>
@@ -259,5 +301,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: '#333',
     fontWeight: '600',
+  },
+   modalOverlay: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  padding:20,
+  borderRadius:50
   },
 });

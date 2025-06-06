@@ -1,17 +1,22 @@
 import React from 'react';
-import { View, Text, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
 import { ProgressBar } from 'react-native-paper';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const { width } = Dimensions.get('window');
   const delet=<Ionicons name="trash" size={13} color={"#f478b8"} />   
 
-const Progress = () => {
+const Progress = ({openModal}) => {
   return (
     <View style={styles.card}>
       <View style={styles.header}>
         <Text style={styles.title}>Office Project</Text>
+       <TouchableOpacity onPress={()=>{
+        openModal()
+        }}>
         <Text style={styles.star}>{delet}</Text>
+
+       </TouchableOpacity>
       </View>
 <View style={{padding:2}}>
       <Text style={styles.subtitle}>Groceray shopping app design</Text>

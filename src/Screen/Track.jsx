@@ -1,10 +1,14 @@
 import { StyleSheet, Text, View,TouchableOpacity, FlatList, Dimensions } from 'react-native'
-import React, { useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../styles/color';
 import Dateslider from '../Components/Dateslider';
 import { ScrollView } from 'react-native'; // add t
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
+import Cards from '../Components/Cards';
+import { Modal } from 'react-native-paper';
 
 
 
@@ -18,48 +22,96 @@ const notification =<Ionicons name="notifications" size={20} color={colors.textc
 
 
 const Track = ({navigation}) => {
+
+const [track,setTrack]=useState([])
+  const [inProgressTasks, setInProgressTasks] = useState([]);
+  const [completedTasks, setCompletedTasks] = useState([]);
+
 const [selected,setselected]=useState("All")
-const tabs = ['All', 'Todo', 'In Progress', 'Completed'];
+const tabs = ['All', 'In Progress', 'Completed'];
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedTask, setSelectedTask] = useState(null);
+
+  const openModal = (task) => {
+    setSelectedTask(task);
+    setModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setSelectedTask(null);
+    setModalVisible(false);
+  };
 
 
 
 
 
 
+  useFocusEffect(
+    useCallback(() => {
+      const fetchTasks = async () => {
+        const storedTasks = await AsyncStorage.getItem('tasks');
+      const parsedTasks = storedTasks ? JSON.parse(storedTasks) : [];
+        if (parsedTasks !== null) {
+console.log("taskiedatsdfghjdfhj",parsedTasks)
+setTrack(parsedTasks)
+// setInProgressTasks(parsedTasks.filter(task=>task.status==="In-progress"))
+
+        } else {
+          setTrack([]);
+        }
+        
+       
+      };
+fetchTasks();
+    }, [])
+  );
+ 
+  const filteredTasks = track.filter((task) => {
+    if (selected === 'All') return true;
+    if (selected === 'Completed') return task.status === 'Completed';
+    if (selected === 'In Progress') return task.status === 'In-progress';
+    return true;
+  });
 
 
+const filterprogress=track.filter(task=>task.status=="In-progress")
+ const completed=track.filter(task => task.status === 'Completed');
+console.log("filetered",filterprogress)
+console.log("filetered",completed)
 
 
-
-
-
-
-
-const data = {
-  All: [
-    { id: '1', title: 'Buy groceries' },
-    { id: '2', title: 'Write report' },
-    { id: '3', title: 'Fix bugs' },
-    { id: '4', title: 'Review PR' },
-  ],
-  Todo: [
-    { id: '1', title: 'Buy groceries' },
-    { id: '2', title: 'Write report' },
-  ],
-  'In Progress': [
-    { id: '3', title: 'Fix bugs' },
-  ],
-  Completed: [
-    { id: '4', title: 'Review PR' },
-  ],
-};
+console.log("trackeddata=========>",track)
 
 
 const goingback=()=>{
   navigation.goBack()
 }
+const handlecompleteprogress = (id) => {
+  const updated = track.map(task =>
+    task.id === id
+      ? {
+          ...task,
+          status: "Completed", // capitalized to match your filter condition
+          isCompleted: true,
+          progress: 100, // optional: assuming 100% if completed
+        }
+      : task
+  );
+
+  setTrack(updated); // 🟢 updates UI
+  AsyncStorage.setItem("tasks", JSON.stringify(updated));
+  closeModal() // 🟢 saves changes
+};
 
 
+const handldelete=(id)=>{
+  const updated = track.filter(task => task.id !== id);
+  setTrack(updated);
+  AsyncStorage.setItem("tasks", JSON.stringify(updated)); // optional: save updated data
+};
+
+console.log("tracfdghjs",track)
   return (
     <SafeAreaView style={{flex:1,backgroundColor:colors.background,padding:25}}>
 
@@ -105,9 +157,22 @@ const goingback=()=>{
 
 
 </View>
+  <FlatList
+        data={filteredTasks}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <Cards task={item} onDelete={handldelete} openModal={openModal} />
+        )}
+        ListEmptyComponent={() => (
+          <Text style={styles.noTaskText}>No tasks available</Text>
+        )}
+        contentContainerStyle={{ paddingBottom: 100 }}
+      />
 
 
 
+
+{/* 
     <View style={styles.card}>
 <View style={{width:"80%",gap:10,paddingHorizontal:6}}>
         <Text style={styles.title}>
@@ -125,7 +190,36 @@ Market Research
 
 </View>
     </View>
+ */}
+ {selectedTask && (
+        <Modal
+          transparent={true}
+          animationType="fade"
+          visible={modalVisible}
+          onRequestClose={closeModal}
+        >
+          <TouchableOpacity onPress={()=>closeModal()} style={styles.modalOverlay}>
+<View style={{backgroundColor:"white",height:250,width:"90%",padding:20,justifyContent:"center",gap:20}}>
+  <Text style={{textAlign:"center",fontSize:16}}>Have you completed your task</Text>
+  <Text style={{textAlign:"center",fontSize:20}}>{selectedTask.value}</Text>
+  
+  <View style={{flexDirection:"row",justifyContent:"space-evenly"}}>
+    <TouchableOpacity  onPress={()=>handlecompleteprogress(selectedTask?.id)}  style={{backgroundColor:"green",paddingHorizontal:30,paddingVertical:10,borderRadius:7}}>
+      <Text style={{color:colors.Whitebtn}}>yes
+      </Text>
+    </TouchableOpacity>
+    <TouchableOpacity onPress={closeModal}  style={{backgroundColor:"red",paddingHorizontal:30,paddingVertical:10,borderRadius:7}}>
+      <Text style={{color:colors.Whitebtn}}>No
+      </Text>
+    </TouchableOpacity>
 
+
+  </View>
+  </View>
+
+          </TouchableOpacity>
+        </Modal>
+      )}
 
 
 
@@ -185,6 +279,13 @@ fontWeight:600},
     height: 8,
     borderRadius: 4,
     backgroundColor: '#ffffff',
+  }, modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)', // transparent background
+    justifyContent: 'center',
+    alignItems: 'center',
+  padding:20,
+  borderRadius:30
   },
 
 })

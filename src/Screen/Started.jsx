@@ -1,22 +1,29 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { colors } from '../styles/color'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { configureNotifications, scheduleHourlyNotification, showNotification } from '../services/Notification'
+import { requestExactAlarmPermission, requestNotificationPermission } from '../services/AlarmPermissionService'
 const Started = ({ navigation }) => {
 
   const started = async () => {
-
     try {
-
-      let data = await AsyncStorage.setItem("User", "true")
-      navigation.replace('Bottom'); // Replace to prevent going back to StartedScreen
-
-      console.log("user hai bhai")
+      await AsyncStorage.setItem("User", "true");
+      await requestNotificationPermission();
+      configureNotifications();
+      const alarmAsked = await AsyncStorage.getItem('AlarmPermissionAsked');
+      if (!alarmAsked && Platform.Version >= 31) {
+        await requestExactAlarmPermission();
+        await AsyncStorage.setItem('AlarmPermissionAsked', 'true');
+      }
+      await showNotification();
+      await scheduleHourlyNotification();
+      navigation.replace('Bottom');
+      console.log("✅ User onboarded and notification setup done.");
     } catch (error) {
-
+      console.error("❌ Error in onboarding:", error);
     }
-  }
-
+  };
   return (
     <View style={styles.contain}>
       <Image
@@ -53,12 +60,6 @@ const Started = ({ navigation }) => {
             </Text>
 
           </View>
-
-
-
-
-
-
         </View>
 
         <TouchableOpacity onPress={started} style={styles.btn}>
@@ -81,7 +82,6 @@ const styles = StyleSheet.create({
   }, image: {
     width: 220,
     height: 220,
-    // resizeMode: 'contain',
   },
   btn: {
     backgroundColor: colors.btncolor, padding: 20, borderCurve: 50, borderRadius: 15

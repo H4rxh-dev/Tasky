@@ -89,8 +89,7 @@ const Tabnavigation = () => {
   const navigation=useNavigation()
 
   return (
-<Tab.Navigator screenOptions={{headerShown:false}}
-
+<Tab.Navigator screenOptions={{headerShown:false,animation:"shift",} }
   tabBar={(props) => <CustomTabBar {...props} />} // ✅ custom tab bar here
 >
   <Tab.Screen name="Home" component={Home} />

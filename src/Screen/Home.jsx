@@ -4,7 +4,7 @@ import {
   View,
   TouchableOpacity,
   StatusBar,
-  Image,
+  Image,Modal
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -12,13 +12,23 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../styles/color';
 import Progress from '../Components/Progress';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
-import { showNotification } from '../services/Notification';
-import { Modal } from 'react-native-paper';
-
-const Home = () => {
+const Home = ({navigation}) => {
   const [progress, setProgress] = useState(85);
  const [modalVisible, setModalVisible] = useState(false);
-  const [selectedTask, setSelectedTask] = useState(null);
+
+
+useEffect(() => {
+    const timer = setTimeout(() => {
+      setProgress(80);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+
+
+
+
 
   const openModal = () => {
    
@@ -28,11 +38,8 @@ const Home = () => {
   const closeModal = () => {
     setModalVisible(false);
   };
-
-
-
-
   
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -49,7 +56,7 @@ const Home = () => {
             <Text style={styles.name}>Groot</Text>
           </View>
         </View>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={()=>navigation.navigate("Listscreen")}>
           <Ionicons name="notifications-outline" size={24} color={colors.textcolor} />
         </TouchableOpacity>
       </View>
@@ -62,10 +69,6 @@ const Home = () => {
         <View style={styles.taskContent}>
           <Text style={styles.taskText}>Your today's task is almost done</Text>
           <TouchableOpacity
-            onPress={() => {
-              showNotification()
-              console.log("lcicked")
-            }}
             style={styles.btn}>
             <Text style={styles.btnText}>View Task</Text>
           </TouchableOpacity>
@@ -134,16 +137,18 @@ const Home = () => {
           visible={modalVisible}
           onRequestClose={closeModal}
         >
-          <TouchableOpacity onPress={()=>closeModal()} style={styles.modalOverlay}>
+          <TouchableOpacity onPress={closeModal} style={styles.modalOverlay}>
+            <View>
+
 <View style={{backgroundColor:"white",height:250,width:"90%",padding:20,justifyContent:"center",gap:30}}>
   <Text style={{textAlign:"center",fontSize:16}}>Are you sure you want to do delete the task</Text>
   
   <View style={{flexDirection:"row",justifyContent:"space-evenly"}}>
-    <TouchableOpacity  onPress={()=>closeModal()} style={{backgroundColor:"green",paddingHorizontal:30,paddingVertical:10,borderRadius:7}}>
+    <TouchableOpacity  onPress={closeModal} style={{backgroundColor:"green",paddingHorizontal:30,paddingVertical:10,borderRadius:7}}>
       <Text style={{color:colors.Whitebtn}}>yes
       </Text>
     </TouchableOpacity>
-    <TouchableOpacity onPress={closeModal()} style={{backgroundColor:"red",paddingHorizontal:30,paddingVertical:10,borderRadius:7}}>
+    <TouchableOpacity onPress={closeModal} style={{backgroundColor:"red",paddingHorizontal:30,paddingVertical:10,borderRadius:7}}>
       <Text style={{color:colors.Whitebtn}}>No
       </Text>
     </TouchableOpacity>
@@ -151,6 +156,7 @@ const Home = () => {
 
   </View>
   </View>
+          </View>
 
           </TouchableOpacity>
         </Modal>
@@ -303,9 +309,10 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
    modalOverlay: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    flex:1,
+    justifyContent:"center",
+    alignItems:"center",
+    backgroundColor: 'rgba(0,0,0,0.5)',
   padding:20,
-  borderRadius:50
   },
 });

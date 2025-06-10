@@ -4,30 +4,29 @@ import { ProgressBar } from 'react-native-paper';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const { width } = Dimensions.get('window');
-  const delet=<Ionicons name="trash" size={13} color={"#f478b8"} />   
 
-const Progress = ({openModal}) => {
+const Progress = ({ openModal }) => {
+
+
+  const opening=()=>{
+    openModal()
+  }
   return (
     <View style={styles.card}>
       <View style={styles.header}>
         <Text style={styles.title}>Office Project</Text>
-       <TouchableOpacity onPress={()=>{
-        openModal()
-        }}>
-        <Text style={styles.star}>{delet}</Text>
-
-       </TouchableOpacity>
+        <TouchableOpacity onPress={opening} style={styles.iconWrapper}>
+          <Ionicons name="trash" size={16} color="#f478b8" />
+        </TouchableOpacity>
       </View>
-<View style={{padding:2}}>
-      <Text style={styles.subtitle}>Groceray shopping app design</Text>
-
-      <ProgressBar
-        progress={0.6}
-        color="#0087ff"
-        style={styles.progress}
-      />
-
-</View>
+      <View style={{ padding: 2 }}>
+        <Text style={styles.subtitle}>Groceray shopping app design</Text>
+        <ProgressBar
+          progress={0.6}
+          color="#0087ff"
+          style={styles.progress}
+        />
+      </View>
     </View>
   );
 };
@@ -52,16 +51,19 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#9495a5',
   },
-  star: {
-    backgroundColor:"#ffe4f2",borderRadius:6,
-  padding:5
+  iconWrapper: {
+    backgroundColor: "#ffe4f2",
+    borderRadius: 6,
+    padding: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   subtitle: {
     fontSize: 12,
     color: '#0b0c0c',
     marginBottom: 12,
-
-fontWeight:600},
+    fontWeight: '600',  // Use string '600'
+  },
   progress: {
     height: 8,
     borderRadius: 4,

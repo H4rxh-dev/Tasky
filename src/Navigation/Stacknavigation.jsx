@@ -11,58 +11,32 @@ import Detail from '../Screen/Detail';
 import messaging from "@react-native-firebase/messaging"
 import { configureNotifications, scheduleHourlyNotification } from '../services/Notification';
 import { requestExactAlarmPermission, requestNotificationPermission } from '../services/AlarmPermissionService';
+import Listscreen from '../Screen/Listscreen';
 
 const Stack = createNativeStackNavigator();
 const Stacknavigation = () => {
   const [initialRoute, setInitialRoute] = useState(null);
+useEffect(() => {
+  const initializeApp = async () => {
+    const hasStarted = await AsyncStorage.getItem('User');
+    console.log("hasstaerd====>",hasStarted)
+    if (hasStarted === 'true') {
+
+  await requestNotificationPermission();
+        configureNotifications();
+        await scheduleHourlyNotification();
+
+      setInitialRoute('Bottom');
+    } else {
+      setInitialRoute('Started');
+    }
+  };
+  initializeApp();
+}, []);
 
 
-  useEffect(() => {
 
-    getdevicetoken()
-
-  }, [])
-
-  const getdevicetoken = async () => {
-
-    let token = await messaging().getToken()
-    console.log("token====>", token)
-  }
-
-  useEffect(() => {
-    const initializeApp = async () => {
-      try {
-        const hasStarted = await AsyncStorage.getItem('User');
-        console.log('Notification scheduled hasStarted:', hasStarted);
-        if (hasStarted === 'true') {
-          setInitialRoute('Bottom');
-
- await requestNotificationPermission();
-
- configureNotifications();
-
-        const alarmAsked = await AsyncStorage.getItem('AlarmPermissionAsked');
-console.log("Alarmaskeftdy",alarmAsked)
-        if (!alarmAsked && Platform.Version >= 31) {
-          await requestExactAlarmPermission();
-          await AsyncStorage.setItem('AlarmPermissionAsked', 'true'); // so it won't repeat
-        }
-
-        scheduleHourlyNotification()     
-
-        } else {
-          setInitialRoute('Started');
-        }
-
-      } catch (error) {
-        console.error('Error during app init:', error);
-      }
-    };
-    initializeApp();
-  }, []);
-
-
-  console.log("intialwa", initialRoute)
+  console.log("initialroute", initialRoute)
 
   if (!initialRoute) {
     return (
@@ -81,7 +55,7 @@ console.log("Alarmaskeftdy",alarmAsked)
 
   return (
     <>
-      <Stack.Navigator initialRouteName={initialRoute} screenOptions={{ headerShown: false }}>
+      <Stack.Navigator initialRouteName={initialRoute} screenOptions={{ headerShown: false, animation: "slide_from_bottom",gestureEnabled:true,fullScreenGestureEnabled:true }}>
 
         <Stack.Screen name="Started" component={Started} />
 
@@ -90,6 +64,8 @@ console.log("Alarmaskeftdy",alarmAsked)
         <Stack.Screen name="Profile" component={Profile} />
         <Stack.Screen name="Stored" component={Stored} />
         <Stack.Screen name="Detail" component={Detail} />
+        <Stack.Screen name="Listscreen" component={Listscreen} />
+
 
       </Stack.Navigator>
     </>

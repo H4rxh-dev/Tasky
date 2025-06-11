@@ -8,7 +8,6 @@ import Tabnavigation from './Tabnavigation';
 import Profile from '../Screen/Profile';
 import Stored from '../Screen/Stored';
 import Detail from '../Screen/Detail';
-import messaging from "@react-native-firebase/messaging"
 import { configureNotifications, scheduleHourlyNotification } from '../services/Notification';
 import { requestExactAlarmPermission, requestNotificationPermission } from '../services/AlarmPermissionService';
 import Listscreen from '../Screen/Listscreen';
@@ -16,23 +15,28 @@ import Listscreen from '../Screen/Listscreen';
 const Stack = createNativeStackNavigator();
 const Stacknavigation = () => {
   const [initialRoute, setInitialRoute] = useState(null);
-useEffect(() => {
-  const initializeApp = async () => {
-    const hasStarted = await AsyncStorage.getItem('User');
-    console.log("hasstaerd====>",hasStarted)
-    if (hasStarted === 'true') {
+  const NOTIFICATIONS_KEY = 'storedNotifications';
 
-  await requestNotificationPermission();
+
+  useEffect(() => {
+    const initializeApp = async () => {
+      const hasStarted = await AsyncStorage.getItem('User');
+      console.log("hasstaerd====>", hasStarted)
+      if (hasStarted === 'true') {
+
+        await requestNotificationPermission();
         configureNotifications();
         await scheduleHourlyNotification();
+        setInitialRoute('Bottom');
 
-      setInitialRoute('Bottom');
-    } else {
-      setInitialRoute('Started');
-    }
-  };
-  initializeApp();
-}, []);
+      } else {
+        setInitialRoute('Started');
+      }
+    };
+    initializeApp();
+  }, []);
+
+
 
 
 
@@ -55,7 +59,7 @@ useEffect(() => {
 
   return (
     <>
-      <Stack.Navigator initialRouteName={initialRoute} screenOptions={{ headerShown: false, animation: "slide_from_bottom",gestureEnabled:true,fullScreenGestureEnabled:true }}>
+      <Stack.Navigator initialRouteName={initialRoute} screenOptions={{ headerShown: false, animation: "slide_from_bottom", gestureEnabled: true, fullScreenGestureEnabled: true }}>
 
         <Stack.Screen name="Started" component={Started} />
 

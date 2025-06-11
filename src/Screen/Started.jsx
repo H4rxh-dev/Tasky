@@ -4,6 +4,7 @@ import { colors } from '../styles/color'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { configureNotifications, scheduleHourlyNotification, showNotification } from '../services/Notification'
 import { requestExactAlarmPermission, requestNotificationPermission } from '../services/AlarmPermissionService'
+
 const Started = ({ navigation }) => {
 
   const started = async () => {
@@ -11,12 +12,13 @@ const Started = ({ navigation }) => {
       await AsyncStorage.setItem("User", "true");
       await requestNotificationPermission();
       configureNotifications();
+
       const alarmAsked = await AsyncStorage.getItem('AlarmPermissionAsked');
       if (!alarmAsked && Platform.Version >= 31) {
         await requestExactAlarmPermission();
         await AsyncStorage.setItem('AlarmPermissionAsked', 'true');
       }
-      await showNotification();
+
       await scheduleHourlyNotification();
       navigation.replace('Bottom');
       console.log("✅ User onboarded and notification setup done.");

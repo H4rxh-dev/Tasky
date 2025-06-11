@@ -4,7 +4,8 @@ import {
   View,
   TouchableOpacity,
   StatusBar,
-  Image,Modal
+  Image,Modal,
+  ScrollView
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -24,11 +25,6 @@ useEffect(() => {
 
     return () => clearTimeout(timer);
   }, []);
-
-
-
-
-
 
   const openModal = () => {
    
@@ -60,6 +56,7 @@ useEffect(() => {
           <Ionicons name="notifications-outline" size={24} color={colors.textcolor} />
         </TouchableOpacity>
       </View>
+  <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 50 }}>
 
       <View style={styles.taskCard}>
         <TouchableOpacity style={styles.moreBtn}>
@@ -161,6 +158,7 @@ useEffect(() => {
           </TouchableOpacity>
         </Modal>
 
+  </ScrollView>
 
     </SafeAreaView>
   );

@@ -7,9 +7,6 @@ import Toast from 'react-native-toast-message';
 import { NavigationRef } from './src/Navigation/NavigationRef';
 
 const Mainapp = () => {
-
-
-
 // useEffect(() => {
 //     // Create a channel for Android
 //     PushNotification.createChannel(
@@ -21,10 +18,6 @@ const Mainapp = () => {
 //       (created) => console.log(`🔔 Channel created: ${created}`),
 //     );
 //   }, []);
-
-
-
-
 
   return (
 <NavigationContainer ref={NavigationRef}>

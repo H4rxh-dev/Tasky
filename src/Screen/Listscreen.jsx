@@ -1,57 +1,59 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
+import { View, Text, FlatList, StyleSheet, AppState } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { notificationEmitter } from '../services/Events';
 import { useFocusEffect } from '@react-navigation/native';
-
 const NOTIFICATIONS_KEY = 'storedNotifications';
 
 const Listscreen = () => {
   const [notifications, setNotifications] = useState([]);
 
-  const fetchNotifications = async () => {
+useFocusEffect(
+  useCallback(() => {
+    const loadNotifications = async () => {
+      const stored = await AsyncStorage.getItem(NOTIFICATIONS_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        console.log("🔄 Refetched on screen focus:", parsed);
+        setNotifications(parsed);
+      }
+    };
+
+    loadNotifications();
+  }, [])
+);
+
+
+
+useEffect(() => {
+  // Load notifications when screen mounts
+  const loadNotifications = async () => {
     try {
       const stored = await AsyncStorage.getItem(NOTIFICATIONS_KEY);
-      const list = stored ? JSON.parse(stored) : [];
-
-      
-      console.log('📥 Notifications Fetched:', list);
-      setNotifications(list);
+      const parsed = stored ? JSON.parse(stored) : [];
+      setNotifications(parsed);
+      console.log("📦 Loaded notifications:", parsed);
     } catch (error) {
-      console.error('❌ Error loading notifications:', error);
+      console.error("❌ Error loading notifications:", error);
     }
   };
 
-  // 🔁 Refresh when screen is focused
-  useFocusEffect(
-    useCallback(() => {
-      fetchNotifications();
-    }, [])
-  );
+  loadNotifications();
 
-  // 🔔 Refresh when a new notification is added via event
-  useEffect(() => {
-    const onNotificationAdded = async () => {
-      await fetchNotifications();
-    };
+  // Listen for new notifications
+  const handler = (newNotif) => {
+    console.log("📥 Received new notification:", newNotif);
+    setNotifications((prev) => [newNotif, ...prev]);
+  };
 
-    notificationEmitter.addListener('notificationAdded', onNotificationAdded);
-    return () => {
-      notificationEmitter.removeListener('notificationAdded', onNotificationAdded);
-    };
-  }, []);
+  notificationEmitter.addListener('notificationAdded', handler);
+  return () => {
+    notificationEmitter.removeListener('notificationAdded', handler);
+  };
+}, []);
+      console.log("📦 Loaded notifications:", notifications);
 
-  // ⏱️ Optional: Periodically refresh every 30 seconds
-  useEffect(() => {
-    const interval = setInterval(() => {
-      fetchNotifications();
-      console.log("🔄 Periodic fetch triggered");
-    }, 30000); // 30 seconds
 
-    return () => clearInterval(interval); // Cleanup on unmount
-  }, []);
-
-  // 🔧 FlatList item rendering
   const renderItem = ({ item }) => (
     <View style={styles.notificationItem}>
       <Text style={styles.title}>{item.title}</Text>

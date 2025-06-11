@@ -24,23 +24,34 @@
   };
 
 
-  export const requestNotificationPermission = async () => {
-    if (Platform.OS === 'android' && Platform.Version >= 33) {
-    
-    const granted = await PermissionsAndroid.request(
+export const requestNotificationPermission = async () => {
+  if (Platform.OS === 'android') {
+    if (Platform.Version >= 33) {
+      const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS
       );
 
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log('Notification permission granted');
+        console.log('✅ Android 13+ notification permission granted');
         return true;
       } else {
-        console.log('Notification permission denied');
+        console.log('❌ Android 13+ notification permission denied');
         return false;
       }
     } else {
-      const result = await PushNotification.requestPermissions();
-      return result.alert === true; 
+      // Android < 13: permission not needed
+      console.log('✅ Android < 13: no notification permission needed');
+      return true;
     }
-
+  } else if (Platform.OS === 'ios') {
+    const result = await PushNotification.requestPermissions();
+    if (result?.alert === true) {
+      console.log('✅ iOS notification permission granted');
+      return true;
+    } else {
+      console.log('❌ iOS notification permission denied');
+      return false;
+    }
   }
+  return false;
+}

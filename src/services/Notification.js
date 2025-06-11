@@ -1,143 +1,123 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import PushNotification from 'react-native-push-notification';
-    import { navigate } from '../Navigation/NavigationRef';
-import { notificationEmitter } from './Events';
-import { InteractionManager } from 'react-native';
-import { useCallback, useEffect } from 'react';
-import { useFocusEffect } from '@react-navigation/native';
+  import AsyncStorage from '@react-native-async-storage/async-storage';
+  import PushNotification from 'react-native-push-notification';
+  import { navigate } from '../Navigation/NavigationRef';
+  import { AppState, InteractionManager } from 'react-native';
+  import { useCallback, useEffect } from 'react';
+  import { useFocusEffect } from '@react-navigation/native';
+  import { notificationEmitter } from './Events';
+  import { storeNotification } from './Storage';
 
-    const Last_notification = 'lastScheduledNotification';
+  const Last_notification = 'lastScheduledNotification';
 
-const NOTIFICATIONS_KEY = 'storedNotifications';
+  const NOTIFICATIONS_KEY = 'storedNotifications';
 
 
- 
-export const storeNotification = async (notification={}) => {
-try {
-   console.log('🔔 [saveNotification] Incoming notification:', notification);
-    const existing= await AsyncStorage.getItem(NOTIFICATIONS_KEY);
-    const notifications = existing ? JSON.parse(existing) : [];
+export const configureNotifications = () => {
+  PushNotification.configure({
+    onNotification: async function (notification) {
+      console.log("📩 Received Notification:", notification);
 
-console.log('📦 Now saved in AsyncStorage:',notifications)
-   console.log("existingsdata",existing)
+      if (!notification) {
+        console.warn('⚠️ Received empty notification');
+        return;
+      }
 
-const newNotification = {
-      ...notification,
-      id: Date.now(),
-      date: new Date().toLocaleString(),
-    };
- const updated = [newNotification, ...notifications];
-    await AsyncStorage.setItem(NOTIFICATIONS_KEY, JSON.stringify(updated));
-        const existing1= await AsyncStorage.getItem(NOTIFICATIONS_KEY);
+     
+      const formatted = {
+        title: notification.title || 'No Title',
+        message: notification.message || 'No Message',
+        id: Date.now(),
+        date: new Date().toLocaleString(),
+        data: notification.data || {},
+      };
 
-console.log("fffffffffffff", existing1);
+      console.log("🧾 Formatted Notification to Store:", formatted);
 
-  notificationEmitter.emit('notificationAdded', newNotification);
-    console.log('✅ Notification emitted', newNotification);
+      await storeNotification(formatted); 
+    },
 
-    console.log('✅ [saveNotification] Notification saved:', newNotification);
-    console.log('📤 [saveNotification] Updated list stored:', notifications);
-} catch (error) {
-    console.error('Error storing notification:', error);
-  }
+    requestPermissions: true,
+    popInitialNotification: true,// Ensures notifications trigger on app open
+  });
+
+  PushNotification.createChannel(
+    {
+      channelId: "task-channel",
+      channelName: "Task Notifications",
+      importance: 4,
+    },
+    (created) => console.log(`📣 Channel created: ${created}`)
+  );
 };
 
-    export const configureNotifications = () => {
-        PushNotification.configure({
-            onNotification: function (notification) {
-console.log("notifucationsssssssss",notification)
-    if (!notification) {
-      console.warn('Received empty notification');
-      return;
-    }
 
-                console.log("NOTIFICATION:===========>", notification);
-                storeNotification(notification);
-                console.log('Incoming notification:', JSON.stringify(notification, null, 2));
+  // export const showNotification = async () => {
 
-                if (notification.userInteraction) {
-                    navigate("Detail", { task: notification?.data.task })
-                }
+  //   const notificationData = {
+  //     title: "Task Reminder",
+  //     message: "Create your task now!",
+  //     id:Date.now(),
+  //     date:new Date().toLocaleString(),
+  //     data: {},
+  //   };
 
-            },
-            requestPermissions: true,
-        });
+  //   await storeNotification(notificationData);
 
-        PushNotification.createChannel(
-            {
-                channelId: "task-channel",
-                channelName: "Task Notifications",
-                importance: 4,
-            },
-            (created) => console.log(`Channel created: ${created}`)
-        );
-    };
+  //   PushNotification.cancelAllLocalNotifications();
 
-    export const showNotification =async () => {
-        
-          const notificationData = {
-    title: "Task Reminder",
-    message: "Create your task now!",
-    data: {},
-  };
-
-  await storeNotification(notificationData); 
- 
-        PushNotification.cancelAllLocalNotifications();
-
-       PushNotification.localNotification({
-    channelId: "task-channel",
-    title: notificationData.title,
-    message: notificationData.message,
-    playSound: true,
-    soundName: 'default',
-    importance: "high",
-  });
-    };
-    
-    export const scheduleHourlyNotification = async () => {
+  //   PushNotification.localNotification({
+  //     channelId: "task-channel",
+  //     title: notificationData.title,
+  //     message: notificationData.message,
+  //     playSound: true,
+  //     soundName: 'default',
+  //     importance: "high",
+  //   });
+  // };
+  
+  export const scheduleHourlyNotification = async () => {
   try {
     const now = Date.now();
     const lastScheduled = await AsyncStorage.getItem(Last_notification);
 
-    if (lastScheduled && now - parseInt(lastScheduled, 10) <  60 * 1000) {
+if (lastScheduled && now - parseInt(lastScheduled, 10) < 60 * 60 * 1000) {
+  console.log('⏳ Already scheduled within the hour. Skipping...');
+  return;
+}
 
-    console.log('⏳ Notification already scheduled within the hour. Skipping...');
-      return;
-    }
-
-    PushNotification.cancelAllLocalNotifications();
-
-    const fireDate = new Date(now + 5 * 1000);
-    console.log('🔔 Scheduling notification at:', fireDate.toLocaleString());
-
+    const fireDate = new Date(now + 5000); 
     const notificationData = {
-      title: '🕐 Task Reminder',
-      message: 'Create a new task!',
-      data: {},
+      id: Date.now(),
+      title: 'Task Reminder',
+      message: 'Create your task now!',
+      date: new Date().toLocaleString(),
     };
 
    
     await storeNotification(notificationData);
 
+    if (AppState.currentState === "active") {
+      notificationEmitter.emit('notificationAdded', notificationData);
+    }
     PushNotification.localNotificationSchedule({
       channelId: 'task-channel',
       title: notificationData.title,
       message: notificationData.message,
       date: fireDate,
       allowWhileIdle: true,
-      repeatType: 'minute',
-
+      repeatType: 'hour',
       playSound: true,
       soundName: 'default',
       importance: 'high',
       visibility: 'public',
-      data: notificationData.data, // Attach any data you want
+      data: notificationData,
     });
 
     await AsyncStorage.setItem(Last_notification, now.toString());
 
-  } catch (error) {
-    console.error('❌ Error scheduling notification:', error);
+    console.log('✅ Scheduled & stored:', notificationData); 
+
+  } catch (err) {
+    console.error('❌ Error scheduling:', err);
   }
 };

@@ -16,7 +16,7 @@ import Stored from '../Screen/Stored';
 import Profile from '../Screen/Profile';
 import { useNavigation } from '@react-navigation/native';
 
-const { width } = Dimensions.get('window');
+const { width,height } = Dimensions.get('window');
 const Tab = createBottomTabNavigator();
 
 const CustomTabBar = ({ state, descriptors, navigation }) => {

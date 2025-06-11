@@ -4,6 +4,12 @@ import { colors } from '../styles/color'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { configureNotifications, scheduleHourlyNotification, showNotification } from '../services/Notification'
 import { requestExactAlarmPermission, requestNotificationPermission } from '../services/AlarmPermissionService'
+import {
+  scale,
+  verticalScale,
+  moderateScale,
+  moderateVerticalScale
+} from 'react-native-size-matters';
 
 const Started = ({ navigation }) => {
 
@@ -26,41 +32,25 @@ const Started = ({ navigation }) => {
       console.error("❌ Error in onboarding:", error);
     }
   };
+
   return (
     <View style={styles.contain}>
       <Image
         source={require('../assets/Reat_img.png')}
-        style={{
-          height: 350,
-          width: 330,
-          backgroundColor: colors.background
-        }}
+        style={styles.image}
         resizeMethod='contain'
-
       />
 
-      <View style={{ justifyContent: "space-between", padding: 14 }}>
-        <View style={{ marginBottom: 36 }}>
-
-          <Text style={{ textAlign: "center", fontSize: 22, fontWeight: 700, fontFamily: "Inter-Regular", color: "#24252c" }}>Task Management & {"\n"}
-            To-Do List
+      <View style={styles.textContainer}>
+        <View style={styles.header}>
+          <Text style={styles.title}>
+            Task Management & {"\n"}To-Do List
           </Text>
 
-          <View style={{ marginTop: 30 }}>
-
-            <Text style={styles.txts}>
-              This productive  tool is designed to help
-            </Text>
-
-            <Text style={styles.txts}>
-              you better manage your task
-            </Text>
-            <Text style={styles.txts}>
-
-
-              project-wise conveniently!
-            </Text>
-
+          <View style={styles.subTextGroup}>
+            <Text style={styles.txts}>This productive tool is designed to help</Text>
+            <Text style={styles.txts}>you better manage your task</Text>
+            <Text style={styles.txts}>project-wise conveniently!</Text>
           </View>
         </View>
 
@@ -69,30 +59,58 @@ const Started = ({ navigation }) => {
         </TouchableOpacity>
       </View>
     </View>
-  )
-}
+  );
+};
 
-export default Started
+export default Started;
 
 const styles = StyleSheet.create({
   contain: {
     flex: 1,
-    padding: 30,
+    padding: moderateScale(24),
     backgroundColor: colors.background,
     justifyContent: "space-evenly"
-
-  }, image: {
-    width: 220,
-    height: 220,
+  },
+  image: {
+    height: verticalScale(300),
+    width: scale(300),
+    backgroundColor: colors.background,
+    alignSelf: "center"
+  },
+  textContainer: {
+    justifyContent: "space-between",
+    padding: moderateScale(14)
+  },
+  header: {
+    marginBottom: verticalScale(36)
+  },
+  title: {
+    textAlign: "center",
+    fontSize: moderateScale(22),
+    fontWeight: '700',
+    fontFamily: "Inter-Regular",
+    color: "#24252c"
+  },
+  subTextGroup: {
+    marginTop: verticalScale(24)
+  },
+  txts: {
+    fontSize: moderateScale(12),
+    fontFamily: "Inter-Regular",
+    textAlign: "center",
+    color: "#96939e",
+    fontWeight: '600',
+    marginBottom: verticalScale(4)
   },
   btn: {
-    backgroundColor: colors.btncolor, padding: 20, borderCurve: 50, borderRadius: 15
+    backgroundColor: colors.btncolor,
+    padding: moderateScale(16),
+    borderRadius: moderateScale(15)
   },
   txt: {
-    textAlign: "center", color: "#ffffff", fontSize: 14, fontWeight: 700
-  },
-  txts: { fontSize: 12, fontFamily: "Inter_Regular", textAlign: "center", color: "#96939e", fontWeight: 600 }
-
-
-
-})
+    textAlign: "center",
+    color: "#ffffff",
+    fontSize: moderateScale(14),
+    fontWeight: '700'
+  }
+});

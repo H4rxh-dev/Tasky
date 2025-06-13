@@ -17,3 +17,17 @@ export const lightColors = [
   '#f9f7f7',  // off white
   '#d6f5d6'   // very light green
 ];
+
+
+// styles/color.js
+export const lightTheme = {
+  background: '#ffffff',
+  text: '#000000',
+  card: '#f4f4f4',
+};
+
+export const darkTheme = {
+  background: '#121212',
+  text: '#ffffff',
+  card: '#1e1e1e',
+};

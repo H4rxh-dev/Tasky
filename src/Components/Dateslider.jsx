@@ -1,5 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
+import {
+  scale,
+  verticalScale,
+  moderateScale,
+  moderateVerticalScale,
+} from 'react-native-size-matters';
+
 
 const generateWeekDates = (startDate) => {
   const days = [];
@@ -107,18 +114,18 @@ const Dateslider = ({ onDateSelect, completedDates = [] }) => {
   );
 };
 
-const styles = StyleSheet.create({
+ const styles = StyleSheet.create({
   container: {
-    paddingVertical: 10,
-    marginTop:30
+    paddingVertical: verticalScale(9),
+    marginTop: verticalScale(18),
   },
   dayBox: {
-    backgroundColor: '#f3f3f3',
-    borderRadius: 12,
-    marginHorizontal: 5,
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-    width: 70,
+    backgroundColor: '#ffffff',
+    borderRadius: scale(12),
+    marginHorizontal: scale(5),
+    paddingVertical: verticalScale(10),
+    paddingHorizontal: scale(12),
+    width: scale(70),
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -127,19 +134,19 @@ const styles = StyleSheet.create({
   },
   completedBox: {
     borderColor: '#00c853',
-    borderWidth: 2,
+    borderWidth: scale(2),
   },
   dayLabel: {
-    fontSize: 12,
+    fontSize: moderateScale(12),
     color: '#555',
   },
   dateLabel: {
-    fontSize: 18,
+    fontSize: moderateScale(18),
     fontWeight: 'bold',
-    color: '#282930 ',
+    color: '#282930',
   },
   monthLabel: {
-    fontSize: 12,
+    fontSize: moderateScale(12),
     color: '#555',
   },
   selectedLabel: {

@@ -3,8 +3,9 @@ import React, { useEffect } from 'react'
 import { NavigationContainer } from '@react-navigation/native'
 import Stacknavigation from './src/Navigation/Stacknavigation'
 import PushNotification from 'react-native-push-notification';
-import Toast from 'react-native-toast-message';
+import Toast, { BaseToast } from 'react-native-toast-message';
 import { NavigationRef } from './src/Navigation/NavigationRef';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 const Mainapp = () => {
 // useEffect(() => {
@@ -19,12 +20,36 @@ const Mainapp = () => {
 //     );
 //   }, []);
 
+const toastConfig = {
+  successGreen: (props) => (
+    <BaseToast
+      {...props}
+      style={{
+        borderLeftColor: 'green',
+        borderWidth: 2,
+        borderRadius: 10,
+      }}
+      contentContainerStyle={{ paddingHorizontal: 15 }}
+      text1Style={{
+        fontSize: 16,
+        fontWeight: 'bold',
+      }}
+    />
+  ),
+};
+
+
   return (
+
+    <SafeAreaProvider>
+
 <NavigationContainer ref={NavigationRef}>
 <Stacknavigation/>
-      <Toast />
+<Toast config={toastConfig} />
 
 </NavigationContainer>
+    </SafeAreaProvider>
+
 )
 }
 

@@ -5,22 +5,56 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const { width } = Dimensions.get('window');
 
-const Progress = ({ openModal }) => {
+const Progress = ({ openModal,Item,isEmpty}) => {
+console.log("Routedata",Item)
 
-
-  const opening=()=>{
-    openModal()
+console.log("RoutedataID",Item?.id)
+const opening = () => {
+  if (Item?.id) {
+    openModal(Item?.id); // ✅ Fix applied
+    console.log("Passing ID:", Item?.id);
+  } else {
+    console.warn("Item or Item.id is undefined");
   }
-  return (
-    <View style={styles.card}>
+};
+
+if (isEmpty) {
+    return (    <View style={styles.card}>
       <View style={styles.header}>
-        <Text style={styles.title}>Office Project</Text>
+        <Text style={styles.title}>Add task</Text>
         <TouchableOpacity onPress={opening} style={styles.iconWrapper}>
           <Ionicons name="trash" size={16} color="#f478b8" />
         </TouchableOpacity>
       </View>
       <View style={{ padding: 2 }}>
-        <Text style={styles.subtitle}>Groceray shopping app design</Text>
+        <Text style={styles.subtitle}>Create and update task to see here</Text>
+        <ProgressBar
+          progress={0}
+          color="#0087ff"
+          style={styles.progress}
+        />
+      </View>
+    </View>
+
+
+
+
+    );
+  }
+
+
+
+  
+  return (
+    <View style={styles.card}>
+      <View style={styles.header}>
+        <Text style={styles.title}>{Item?.value}</Text>
+        <TouchableOpacity onPress={opening} style={styles.iconWrapper}>
+          <Ionicons name="trash" size={16} color="#f478b8" />
+        </TouchableOpacity>
+      </View>
+      <View style={{ padding: 2 }}>
+        <Text style={styles.subtitle}>{Item?.desc}</Text>
         <ProgressBar
           progress={0.6}
           color="#0087ff"

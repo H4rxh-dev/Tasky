@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React, { useEffect } from 'react'
 import Mainapp from './Mainapp'
+import { Theeprovider } from './src/Context/Themecontext'
 
 const App = () => {
 
@@ -19,7 +20,10 @@ const App = () => {
 
 return (
 <>
+<Theeprovider>
 <Mainapp/>
+
+</Theeprovider>
 </>  )
 }
 

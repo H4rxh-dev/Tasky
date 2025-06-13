@@ -11,6 +11,7 @@ import Detail from '../Screen/Detail';
 import { configureNotifications, scheduleHourlyNotification } from '../services/Notification';
 import { requestExactAlarmPermission, requestNotificationPermission } from '../services/AlarmPermissionService';
 import Listscreen from '../Screen/Listscreen';
+import Track from '../Screen/Track';
 
 const Stack = createNativeStackNavigator();
 const Stacknavigation = () => {
@@ -69,6 +70,7 @@ const Stacknavigation = () => {
         <Stack.Screen name="Stored" component={Stored} />
         <Stack.Screen name="Detail" component={Detail} />
         <Stack.Screen name="Listscreen" component={Listscreen} />
+        <Stack.Screen name="Track" component={Track} />
 
 
       </Stack.Navigator>

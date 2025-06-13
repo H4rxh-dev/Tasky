@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity,TextInput, Alert } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity,TextInput, Alert,ScrollView,KeyboardAvoidingView,Platform } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -9,6 +9,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import DatePicker from 'react-native-date-picker';
 import uuid from 'react-native-uuid';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ScaledSheet, moderateScale, scale, verticalScale } from 'react-native-size-matters';
+
 
 const tick = <Ionicons name="arrow-back-outline" size={25} color={colors.textcolor} />;
 const notification = <Ionicons name="notifications" size={20} color={colors.textcolor} />;
@@ -131,7 +133,7 @@ const formatDate = (date) => {
 
 
   return (
-    <SafeAreaView style={styles.safe}>
+ <SafeAreaView style={styles.safe}>
       <View style={styles.header}>
         <TouchableOpacity onPress={goingback}>
           <Text>{tick}</Text>
@@ -140,208 +142,195 @@ const formatDate = (date) => {
         <Text>{notification}</Text>
       </View>
 
-      <View style={styles.form}>
-        <View style={[styles.dropdownWrapper, { marginBottom: open ? 100 : 10 }]}>
-          <View style={styles.dropdownIcon}>
-            <Ionicons name="bag-sharp" size={16} color={"#f47cba"} />
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      >
+        <ScrollView
+          contentContainerStyle={styles.form}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+            nestedScrollEnabled={true} // ✅ add this
+>
+          {/* DropDown Picker */}
+          <View style={[styles.dropdownWrapper, { marginBottom: open ? 120 : 20 }]}>
+            <View style={styles.dropdownIcon}>
+              <Ionicons name="bag-sharp" size={16} color={"#f47cba"} />
+            </View>
+            <View style={{ zIndex: open ? 2000 : 1 }}>
+
+            <DropDownPicker
+              open={open}
+              value={value}
+              items={filtertaskitem}
+              setOpen={setOpen}
+              setValue={setValue}
+              setItems={() => {}}
+              placeholder="Task Group"
+              style={styles.dropdown}
+              zIndex={4000}
+              zIndexInverse={1000}
+listMode="SCROLLVIEW"
+  nestedScrollEnabled={true} // ✅
+ArrowDownIconComponent={({ style }) => (
+                <Icon name="caret-down" size={20} color="#000" style={style} />
+              )}
+              ArrowUpIconComponent={({ style }) => (
+                <Icon name="caret-up" size={20} color="#000" style={style} />
+              )}
+              onChangeValue={(val) => {
+                const selectedTask = taskSuggestions.find(task => task.value === val);
+                console.log("Selected Task Label:", selectedTask?.label);
+              }}
+            />
           </View>
-          <DropDownPicker
-            open={open}
-            value={value}
-            items={filtertaskitem}
-            setOpen={setOpen}
-            setValue={setValue}
-            setItems={() => {}}
-            placeholder="Task Group"
-            style={styles.dropdown}
-            zIndex={3000}
-            ArrowDownIconComponent={({ style }) => (
-              <Icon name="caret-down" size={20} color="#000" style={style} />
-            )}
-            ArrowUpIconComponent={({ style }) => (
-              <Icon name="caret-up" size={20} color="#000" style={style} />
-            )}
-            onChangeValue={(val) => {
-              const selectedTask = taskSuggestions.find(task => task.value === val);
-              console.log("Selected Task Label:", selectedTask?.label);
-              console.log("Selected Task Value:", val);
+          </View>
+
+          {/* Title */}
+          <View style={{ backgroundColor: colors.textfield, padding: 10 }}>
+            <Text style={{ fontSize: 10, paddingInlineStart: 10, color: "#8d8b98" }}>Title</Text>
+            <TextInput
+              style={{ paddingInlineStart: 10, color: '#000' }}
+              placeholder="Enter title"
+              placeholderTextColor="#000"
+              value={title}
+              onChangeText={settitle}
+            />
+          </View>
+
+          {/* Description */}
+          <View style={{ backgroundColor: colors.textfield, padding: 10, borderRadius: 8 }}>
+            <Text style={{ fontSize: 10, paddingInlineStart: 10, color: "#8d8b98", marginBottom: 6 }}>
+              Description
+            </Text>
+            <TextInput
+              placeholder="Write here..."
+              multiline
+              numberOfLines={5}
+              textAlignVertical="top"
+style={{
+  paddingLeft: scale(10),
+  paddingTop: verticalScale(10),
+  fontSize: scale(14),
+  color: '#000',
+}}
+              placeholderTextColor="#000"
+              value={desc}
+              onChangeText={setdesc}
+            />
+          </View>
+
+          {/* Start Date */}
+          <TouchableOpacity style={styles.dateRow} onPress={() => setOpenStart(true)}>
+            <View style={styles.dategap}>
+              <Icon name="calendar" size={20} color="#8361e7" />
+              <View>
+                <Text style={styles.label}>Start Date</Text>
+                <Text style={styles.dateText}>{formatDate(startDate)}</Text>
+              </View>
+            </View>
+            <Icon name="caret-down" size={20} color="#8361e7" />
+          </TouchableOpacity>
+
+          <DatePicker
+            modal
+            mode="date"
+            open={openStart}
+            date={startDate}
+            minimumDate={new Date()}
+            onConfirm={(date) => {
+              setOpenStart(false);
+              setStartDate(date);
+              if (date > endDate) setEndDate(date);
             }}
+            onCancel={() => setOpenStart(false)}
           />
-        </View>
 
-<View style={{ backgroundColor:colors.textfield,padding: 10 }}>
-  <Text style={{fontSize: 10, paddingInlineStart: 10, color: "#8d8b98" }}>Title</Text>
-  <TextInput
-    style={{ paddingInlineStart: 10, color: '#000' }}  // <-- added color
-    placeholder="Enter title"
-    placeholderTextColor="#000"
-    value={title}
-    onChangeText={settitle}
-  />
-</View>
-
-<View style={{ backgroundColor: colors.textfield, padding: 10, borderRadius: 8 }}>
-  <Text style={{ fontSize: 10, paddingInlineStart: 10, color: "#8d8b98", marginBottom: 6 }}>
-    Description
-  </Text>
-  <TextInput
-    placeholder="Write here..."
-    multiline
-    numberOfLines={5}
-    textAlignVertical="top"
-    style={{
-      paddingInlineStart: 10,
-      paddingTop: 10,
-      fontSize: 14,
-      height: 80,
-      color: '#000'  // <-- added color for input text
-    }}
-    placeholderTextColor="#000"
-    value={desc}
-    onChangeText={setdesc}
-  />
-</View>
-
-        {/* Start Date Row */}
-        <TouchableOpacity style={styles.dateRow} onPress={() => setOpenStart(true)}>
-          <View style={styles.dategap}>
-            <Icon name="calendar" size={20} color="#8361e7" />
-            <View>
-              <Text style={styles.label}>Start Date</Text>
-              <Text style={styles.dateText}>{formatDate(startDate)}</Text>
+          {/* End Date */}
+          <TouchableOpacity style={styles.dateRow} onPress={() => setOpenEnd(true)}>
+            <View style={styles.dategap}>
+              <Icon name="calendar" size={20} color="#8361e7" />
+              <View>
+                <Text style={styles.label}>End Date</Text>
+                <Text style={styles.dateText}>{formatDate(endDate)}</Text>
+              </View>
             </View>
-          </View>
-          <Icon name="caret-down" size={20} color="#8361e7" />
-        </TouchableOpacity>
+            <Icon name="caret-down" size={20} color="#8361e7" />
+          </TouchableOpacity>
 
- <DatePicker
-          modal
-          mode="date"
-          open={openStart}
-          date={startDate}
- minimumDate={new Date()}  // Start date can't be before today
-          onConfirm={(date) => {
-            setOpenStart(false);
-            setStartDate(date);
-
-            // If endDate is before new startDate, update endDate to match startDate
-            if (date > endDate) {
+          <DatePicker
+            modal
+            mode="date"
+            open={openEnd}
+            date={endDate}
+            minimumDate={startDate}
+            onConfirm={(date) => {
+              setOpenEnd(false);
               setEndDate(date);
-            }
-          }}          onCancel={() => setOpenStart(false)}
-        /> 
-        
-               <TouchableOpacity style={styles.dateRow} onPress={() => setOpenEnd(true)}>
-          <View style={styles.dategap}>
-            <Icon name="calendar" size={20} color="#8361e7" />
-            <View>
-              <Text style={styles.label}>End Date</Text>
-              <Text style={styles.dateText}>{formatDate(endDate)}</Text>
-            </View>
-          </View>
-          <Icon name="caret-down" size={20} color="#8361e7" />
-        </TouchableOpacity>
+            }}
+            onCancel={() => setOpenEnd(false)}
+          />
 
-       <DatePicker
-          modal
-          mode="date"
-          open={openEnd}
-          date={endDate}
- minimumDate={startDate} // End date can't be before startDate
-          onConfirm={(date) => {
-            setOpenEnd(false);
-            setEndDate(date);
-          }}
-          onCancel={() => setOpenEnd(false)}          
-        />
-
-        <TouchableOpacity onPress={savingtask} style={styles.btn}>
-          <Text style={styles.txt}>Add project</Text>
-        </TouchableOpacity>
-      </View>
+          {/* Submit Button */}
+          <TouchableOpacity onPress={savingtask} style={styles.btn}>
+            <Text style={styles.txt}>Add project</Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
 
 export default Detail;
-
-const styles = StyleSheet.create({
+const styles = ScaledSheet.create({
   safe: {
     flex: 1,
     backgroundColor: colors.background,
-    paddingHorizontal: 25,
-    paddingTop: 10,
-
+    paddingHorizontal: scale(25),
+    paddingTop: verticalScale(10),
   },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 20,
+    marginBottom: verticalScale(20),
   },
   headerTitle: {
     fontFamily: "Inter-Regular",
     fontWeight: '700',
-    fontSize: 17,
+    fontSize: scale(17),
     color: colors.textcolor,
   },
   form: {
-    gap: 20,
+    gap: verticalScale(20),
+    paddingBottom: verticalScale(40),
   },
   dropdownWrapper: {
     position: 'relative',
+    zIndex: 3000,
   },
   dropdownIcon: {
     position: 'absolute',
-    left: 12,
+    left: scale(12),
     top: '50%',
     backgroundColor: "#ffe4f2",
-    padding: 6,
-    borderRadius: 6,
+    padding: scale(6),
+    borderRadius: scale(6),
     transform: [{ translateY: -12 }],
     zIndex: 5000,
     justifyContent: 'center',
     alignItems: 'center',
-    width: 24,
-    height: 23,
+    width: scale(24),
+    height: scale(23),
   },
   dropdown: {
     borderColor: "#c8c7ce",
-    paddingVertical: 12,
-    paddingLeft: 60,
+    paddingVertical: verticalScale(12),
+    paddingLeft: scale(60),
     backgroundColor: "#ffffff",
   },
-  input: {
-    backgroundColor: colors.textfield,
-    borderColor: "#c8c7ce",
-    borderWidth: 0.3,
-  },
-  inputWrapper: {
-    position: 'relative',
-  },
-  insideLabel: {
-    position: 'absolute',
-    top: 8,
-    left: 16,
-    fontSize: 12,
-    color: '#6e6e6e',
-    zIndex: 10,
-    backgroundColor: colors.textfield,
-    paddingHorizontal: 4,
-  },
-  textArea: {
-    backgroundColor: colors.textfield,
-    borderColor: "#c8c7ce",
-    borderWidth: 0.3,
-    height: 120,
-    borderRadius: 8,
-    fontSize: 14,
-    paddingTop: 32,
-    paddingHorizontal: 12,
-    textAlignVertical: 'top',
-  },
   label: {
-    fontSize: 11,
+    fontSize: scale(11),
     color: '#93909d',
     fontWeight: '600',
   },
@@ -350,38 +339,35 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: colors.textfield,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    borderRadius: 8,
+    paddingHorizontal: scale(14),
+    paddingVertical: verticalScale(12),
+    borderRadius: scale(8),
     borderWidth: 0.5,
     borderColor: '#ccc',
   },
   dateText: {
-    fontSize: 14,
+    fontSize: scale(14),
     color: '#000',
   },
   dategap: {
-    justifyContent: "center",
     flexDirection: "row",
     alignItems: "center",
-    gap: 20,
+    gap: scale(20),
   },
-
-btn: {
-  backgroundColor: colors.btncolor,
-  paddingVertical: 15,      // vertical padding for height
-  paddingHorizontal: 20,    // horizontal padding for width
-  borderRadius: 15,         // rounded corners
-marginTop:70,
-  alignSelf: 'stretch',     // button takes full width of container
-  justifyContent: 'center',
-  alignItems: 'center',
-},
-
-txt: {
-  textAlign: "center",
-  color: "#ffffff",
-  fontSize: 16,
-  fontWeight: "700",
-},
+  btn: {
+    backgroundColor: colors.btncolor,
+    paddingVertical: verticalScale(15),
+    paddingHorizontal: scale(20),
+    borderRadius: scale(15),
+    marginTop: verticalScale(20),
+    alignSelf: 'stretch',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  txt: {
+    textAlign: "center",
+    color: "#ffffff",
+    fontSize: scale(16),
+    fontWeight: "700",
+  },
 });
